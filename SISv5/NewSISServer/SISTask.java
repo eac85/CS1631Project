@@ -2,11 +2,17 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.stream.Collectors;
 
+
+import java.util.Iterator;
+import java.util.Set;
+
 /**
  * SISTask is used for handling one connection to a specific component
  */
 
 public class SISTask implements Runnable {
+
+    public VoterTable voterTable = new VoterTable();
 
     // message writer for a component
     private MsgEncoder encoder;
@@ -34,6 +40,7 @@ public class SISTask implements Runnable {
     @Override
     public void run() {
         // TODO Auto-generated method stub
+       
         try {
             KeyValueList kvList;
             while (true) {
@@ -83,6 +90,7 @@ public class SISTask implements Runnable {
      * process a certain message, execute corresponding actions
      */
     void ProcessMsg(KeyValueList kvList) throws Exception {
+       
 		if(kvList.size()>0){
 			System.out.println("====================");
 		System.out.println(kvList);
@@ -108,6 +116,18 @@ public class SISTask implements Runnable {
         case "Reading":
             SISHandlers.ReadingHandler(scope, sender, receiver, direction,
                     broadcast, kvList);
+            break;
+        case "Voting":
+            System.out.println("From SISTask");
+            String voterPhone = kvList.getValue("VoterPhone");
+            String candidateID = kvList.getValue("CandidateID");
+            voterTable.castVote(voterPhone, candidateID);
+            SISHandlers.VoteHandler(scope, sender, receiver, direction,
+                    broadcast, kvList, voterTable);
+            break;
+        case "Terminate":
+            SISHandlers.TerminateHandler(scope, sender, receiver, direction,
+                    broadcast, kvList, voterTable);
             break;
         case "Emergency":
             SISHandlers.EmergencyHandler(scope, sender, receiver, direction,

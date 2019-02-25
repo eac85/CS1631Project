@@ -1,11 +1,17 @@
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * SISTask is used for handling one connection to a specific component
  */
 
 public class SISPullTask implements Runnable {
+
+	public VoterTable voterTable;
 
 	private static final String URL = "http://ksiresearchorg.ipage.com/chronobot/getMDB.php?uid=376896";
 
@@ -36,6 +42,7 @@ public class SISPullTask implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
+			voterTable = new VoterTable();
 			List<KeyValueList> kvLists;
 			while (true) {
 				// attempt to read and decode a message, see MsgDecoder for
@@ -97,6 +104,7 @@ public class SISPullTask implements Runnable {
 	 * process a certain message, execute corresponding actions
 	 */
 	void ProcessMsg(KeyValueList kvList) throws Exception {
+
 		if(kvList.size()>0){
 			System.out.println("====================");
 			System.out.println(kvList);
@@ -134,6 +142,10 @@ public class SISPullTask implements Runnable {
 		// broadcast, kvList);
 		//
 		// break;
+		case "Voting":
+			System.out.println("From SISPullTask");
+			SISHandlers.VoteHandler(scope, sender, receiver, direction, broadcast, kvList, voterTable);
+		    break;
 		case "Setting":
 			SISHandlers.SettingHandler(scope, sender, receiver, direction,
 					broadcast, kvList);

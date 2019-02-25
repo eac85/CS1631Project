@@ -73,7 +73,7 @@ public class CreateTempBloodPressure {
 				conn.putPair("Name", NAME);
 				conn.putPair("Test", "Tester");
 				encoder.sendMsg(conn);
-				System.out.println("Hello");
+				
 
 				initRecord();
 
@@ -82,7 +82,6 @@ public class CreateTempBloodPressure {
 				KeyValueList kvList;
 
 				while (true) {
-					System.out.println("Hello");
 					// attempt to read and decode a message, see MsgDecoder for
 					// details
 					kvList = decoder.getMsg();
@@ -130,6 +129,8 @@ public class CreateTempBloodPressure {
 	 * process a certain message, execute corresponding actions
 	 */
 	static void ProcessMsg(KeyValueList kvList) throws IOException {
+
+		System.out.println("Hmmmmmm do we get here");
 
 		String scope = kvList.getValue("Scope");
 		
